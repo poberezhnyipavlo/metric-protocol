@@ -1,0 +1,20 @@
+{
+  "name": "metric-protocol",
+  "version": "1.0.0",
+  "description": "Text wire format for metrics over UDP: ver=1 seq=N name=<name> value=<number>. Shared by the ESP32 sender and the System Monitor receiver.",
+  "keywords": "metrics, udp, protocol, esp32",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/poberezhnyipavlo/metric-protocol.git"
+  },
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*",
+  "build": {
+    "includeDir": "include",
+    "srcDir": "src"
+  },
+  "export": {
+    "exclude": ["test", "build", ".github"]
+  }
+}
