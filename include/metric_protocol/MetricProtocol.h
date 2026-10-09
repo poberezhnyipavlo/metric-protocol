@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
 #include <array>
 #include <optional>
 #include <string_view>
@@ -21,11 +23,10 @@ namespace metric {
   };
 
   struct Message {
-    uint32_t version;
-    std::optional<std::string_view> dev;
-    std::optional<uint32_t> boot;
+    std::string_view dev;
+    uint32_t boot;
     uint32_t seq;
-    std::optional<uint32_t> age_ms;
+    uint32_t age_ms;
     std::string_view name;
     double value;
   };

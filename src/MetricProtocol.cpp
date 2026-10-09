@@ -201,6 +201,6 @@ namespace metric {
       return std::nullopt;
     }
 
-    return Message{.version = *version, .dev = *dev, .boot = *bootNum, .seq = *seqNum, .age_ms = *ageNum, .name = *name, .value = *num};
+    return Message{*dev, *bootNum, *seqNum, *ageNum, *name, *num};
   }
 }
