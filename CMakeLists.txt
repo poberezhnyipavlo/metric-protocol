@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(metric_protocol VERSION 1.0.0 LANGUAGES CXX)
+project(metric_protocol VERSION 2.0.0 LANGUAGES CXX)
 
 add_library(metric_protocol src/MetricProtocol.cpp)
 add_library(metric_protocol::metric_protocol ALIAS metric_protocol)
