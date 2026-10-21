@@ -3,6 +3,15 @@
 All notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/),
 versions follow [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] - 2026-10-21
+
+### Added
+- `metric_protocol/MetricNames.h`: shared metric names (`metric::names`) for the monitoring node:
+  `temperature_c`, `humidity_pct`, `temp_alert`, `dht_ok`.
+- `metric::temp_alert` values: `k_too_cold` (-1), `k_normal` (0), `k_too_hot` (1).
+
+The wire format is unchanged (`ver=2`); any valid name is still accepted by `parse()`.
+
 ## [2.0.0] - 2026-10-09
 
 ### Added

@@ -8,6 +8,7 @@
 #include <string_view>
 
 #include <metric_protocol/MetricProtocol.h>
+#include <metric_protocol/MetricNames.h>
 
 using metric::Metric;
 using metric::Origin;
@@ -193,4 +194,11 @@ TEST(MetricParse, RejectsBadNumbers) {
 TEST(MetricParse, RejectsBadNameAndOversizedInput) {
     EXPECT_FALSE(metric::parse(line("1", "Bad", "2")).has_value());
     EXPECT_FALSE(metric::parse(std::string(metric::k_max_message_len + 1, 'a')).has_value());
+}
+
+TEST(MetricNames, AllNamesAreValid) {
+    for (const std::string_view name : {metric::names::k_temperature_c, metric::names::k_humidity_pct,
+                                        metric::names::k_temp_alert, metric::names::k_dht_ok}) {
+        EXPECT_TRUE(metric::isValidName(name)) << name;
+                                        }
 }

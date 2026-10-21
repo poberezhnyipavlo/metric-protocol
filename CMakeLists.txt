@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
-project(metric_protocol VERSION 2.0.0 LANGUAGES CXX)
+project(metric_protocol VERSION 2.1.0 LANGUAGES CXX)
 
-add_library(metric_protocol src/MetricProtocol.cpp)
+add_library(metric_protocol src/MetricProtocol.cpp
+        include/metric_protocol/MetricNames.h)
 add_library(metric_protocol::metric_protocol ALIAS metric_protocol)
 target_include_directories(metric_protocol PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(metric_protocol PUBLIC cxx_std_17)

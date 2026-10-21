@@ -94,6 +94,20 @@ cmake --build build
 ctest --test-dir build
 ```
 
+## Metric names
+
+`#include <metric_protocol/MetricNames.h>` gives the names and values both sides agree on:
+
+| Name | Value | Meaning |
+|---|---|---|
+| `temperature_c` | float | temperature, °C |
+| `humidity_pct` | float | relative humidity, % |
+| `temp_alert` | `-1` / `0` / `1` | too cold / normal / too hot (`metric::temp_alert`) |
+| `dht_ok` | `0` / `1` | `1` with every successful reading, `0` when the sensor did not answer |
+
+The names are a vocabulary, not a filter: `parse()` accepts any valid name. Which names a receiver
+stores is its own policy (a whitelist on the receiver side).
+
 ## Versioning
 
 - The library follows semantic versioning; the git tag, `library.json` and `project(VERSION)` in `CMakeLists.txt`
