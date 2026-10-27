@@ -3,6 +3,22 @@
 All notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/),
 versions follow [Semantic Versioning](https://semver.org/).
 
+## [3.0.0] - 2026-10-27
+
+### Added
+- `metric_protocol/LogProtocol.h`: wire format for node event logs (`ver=1`), moved from esp32-monitoring-node:
+  `logproto::serialize()`, `isValidSrc()`, `toString(Level)`.
+- `logproto::parse()` and `logproto::parseLevel()` for the receiver.
+
+### Changed
+- **Breaking:** constants renamed to the `kCamelCase` style: `k_version` → `kVersion`, `k_max_name_len` → `kMaxNameLen`,
+  `k_dev_len` → `kDevLen`, `k_max_message_len` → `kMaxMessageLen`; `names::k_temperature_c` → `names::kTemperatureC`,
+  `k_humidity_pct` → `kHumidityPct`, `k_temp_alert` → `kTempAlert`, `k_dht_ok` → `kDhtOk`;
+  `temp_alert::k_too_cold` → `kTooCold`, `k_normal` → `kNormal`, `k_too_hot` → `kTooHot`.
+
+The metric wire format is unchanged (`ver=2`), devices and receivers on 2.x and 3.0 understand each other.
+The library stays C++17.
+
 ## [2.1.0] - 2026-10-21
 
 ### Added

@@ -35,6 +35,37 @@ A trailing `\n` is added by `serialize()` and ignored by `parse()`. The longest 
 `parse()` accepts `ver=2` only; `ver=1` lines are rejected. Policy: when the format changes, devices and receivers
 are updated together. Until a device is updated, its lines are dropped by the receiver.
 
+## Node event logs
+
+A second, separate format for events of the node ("black box"), one line per event, usually on its own TCP port:
+
+```
+ver=1 dev=20:9b:a9:61:15:6c boot=e1ff8983 seq=0 age_ms=2843 level=error src=boot text=started, reason=task_watchdog boot=2
+```
+
+| Field | Meaning |
+|---|---|
+| `ver` | log format version, `1`; independent of the metric `ver` |
+| `dev`, `boot`, `age_ms` | same as in metric lines |
+| `seq` | separate counter from metrics, from 0 at every boot |
+| `level` | `info`, `warn` or `error` |
+| `src` | where the event comes from: `[a-z0-9_]{1,15}` |
+| `text` | the rest of the line, up to 96 characters; may be empty, may contain spaces and `=` |
+
+```cpp
+#include <metric_protocol/LogProtocol.h>
+
+// sender
+std::array<char, logproto::kMaxLineLen> buf{};
+const logproto::Record r{dev, boot, seq, age_ms, logproto::Level::kError, "boot", "started"};
+size_t len = logproto::serialize(r, buf.data(), buf.size());   // 0: invalid src or buffer too small
+
+// receiver
+if (auto r = logproto::parse(line)) {
+    // r->level, r->src, r->text ... (string_views into `line`)
+}
+```
+
 ## API
 
 ```cpp

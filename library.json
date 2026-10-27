@@ -1,8 +1,7 @@
 {
-  "name": "metric-protocol",
-  "version": "2.1.0",
-  "description": "Text wire format for metrics over UDP: ver=1 seq=N name=<name> value=<number>. Shared by the ESP32 sender and the System Monitor receiver.",
-  "keywords": "metrics, udp, protocol, esp32",
+  "version": "3.0.0",
+  "description": "Text wire formats shared by the ESP32 monitoring node and the System Monitor receiver: metrics (ver=2) and node event logs (ver=1).",
+  "keywords": "metrics, logs, protocol, esp32",
   "repository": {
     "type": "git",
     "url": "https://github.com/poberezhnyipavlo/metric-protocol.git"
