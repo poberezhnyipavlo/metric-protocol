@@ -4,7 +4,7 @@ project(metric_protocol VERSION 2.1.0 LANGUAGES CXX)
 add_library(metric_protocol src/MetricProtocol.cpp
         include/metric_protocol/MetricNames.h
         src/FieldParser.h
-        include/metric_protocol/LogProtocol.cpp
+        src/LogProtocol.cpp
         include/metric_protocol/LogProtocol.h)
 add_library(metric_protocol::metric_protocol ALIAS metric_protocol)
 target_include_directories(metric_protocol PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
