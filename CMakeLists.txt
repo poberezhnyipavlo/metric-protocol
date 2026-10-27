@@ -3,7 +3,9 @@ project(metric_protocol VERSION 2.1.0 LANGUAGES CXX)
 
 add_library(metric_protocol src/MetricProtocol.cpp
         include/metric_protocol/MetricNames.h
-        src/FieldParser.h)
+        src/FieldParser.h
+        include/metric_protocol/LogProtocol.cpp
+        include/metric_protocol/LogProtocol.h)
 add_library(metric_protocol::metric_protocol ALIAS metric_protocol)
 target_include_directories(metric_protocol PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(metric_protocol PUBLIC cxx_std_17)
@@ -22,7 +24,8 @@ if(METRIC_PROTOCOL_BUILD_TESTS)
     FetchContent_MakeAvailable(googletest)
 
     enable_testing()
-    add_executable(metric_protocol_tests test/test_metric_protocol.cpp)
+    add_executable(metric_protocol_tests test/test_metric_protocol.cpp
+            test/test_log_protocol.cpp)
     target_link_libraries(metric_protocol_tests PRIVATE metric_protocol GTest::gtest_main)
     target_compile_options(metric_protocol_tests PRIVATE -Wall -Wextra -Wconversion -Werror)
 
