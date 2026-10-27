@@ -99,7 +99,7 @@ No Arduino or OS dependencies, C++17, no heap allocation.
 PlatformIO (`platformio.ini`):
 
 ```ini
-lib_deps = https://github.com/poberezhnyipavlo/metric-protocol.git#v2.0.0
+lib_deps = https://github.com/poberezhnyipavlo/metric-protocol.git#v3.0.0
 ```
 
 CMake:
@@ -108,7 +108,7 @@ CMake:
 include(FetchContent)
 FetchContent_Declare(metric_protocol
   GIT_REPOSITORY https://github.com/poberezhnyipavlo/metric-protocol.git
-  GIT_TAG v2.0.0)
+  GIT_TAG v3.0.0)
 FetchContent_MakeAvailable(metric_protocol)
 target_link_libraries(your_target PRIVATE metric_protocol::metric_protocol)
 ```
