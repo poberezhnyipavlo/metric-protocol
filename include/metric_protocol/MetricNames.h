@@ -7,7 +7,7 @@ inline constexpr std::string_view k_temperature_c = "temperature_c";
 inline constexpr std::string_view k_humidity_pct = "humidity_pct";
 inline constexpr std::string_view k_temp_alert = "temp_alert";
 inline constexpr std::string_view k_dht_ok = "dht_ok";
-} // namespace metric::names
+}  // namespace metric::names
 
 namespace metric::temp_alert {
 inline constexpr double k_too_cold = -1;

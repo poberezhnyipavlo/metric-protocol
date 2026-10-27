@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <metric_protocol/MetricNames.h>
+#include <metric_protocol/MetricProtocol.h>
 
 #include <array>
 #include <cmath>
@@ -7,24 +9,26 @@
 #include <string>
 #include <string_view>
 
-#include <metric_protocol/MetricProtocol.h>
-#include <metric_protocol/MetricNames.h>
-
 using metric::Metric;
 using metric::Origin;
 
 namespace {
-    constexpr std::string_view k_dev = "20:9b:a9:61:15:6c";
-    const Origin k_origin{k_dev, 0x3f2a91c4U};
+constexpr std::string_view k_dev = "20:9b:a9:61:15:6c";
+const Origin k_origin{k_dev, 0x3f2a91c4U};
 
-    std::string serialize(std::string_view name, double value, uint32_t seq, uint32_t age_ms = 0,
-                          Origin origin = k_origin) {
-        std::array<char, metric::k_max_message_len> buf{};
-        const size_t n =
-                metric::serialize(origin, seq, age_ms, Metric{name, value}, buf.data(), buf.size());
-        return std::string(buf.data(), n);
-    }
+std::string serialize(
+    std::string_view name,
+    double value,
+    uint32_t seq,
+    uint32_t age_ms = 0,
+    Origin origin = k_origin
+) {
+    std::array<char, metric::k_max_message_len> buf{};
+    const size_t n =
+        metric::serialize(origin, seq, age_ms, Metric{name, value}, buf.data(), buf.size());
+    return std::string(buf.data(), n);
 }
+}  // namespace
 
 TEST(MetricName, AcceptsSnakeCase) {
     EXPECT_TRUE(metric::isValidName("uptime_s"));
@@ -64,17 +68,23 @@ TEST(MetricDev, RejectsOtherSpellings) {
 TEST(MetricDev, FormatsBytesInOrder) {
     const auto s = metric::formatDev({0x20, 0x9b, 0xa9, 0x61, 0x15, 0x6c});
     EXPECT_EQ(std::string_view(s.data()), "20:9b:a9:61:15:6c");
-    EXPECT_EQ(std::string_view(metric::formatDev({0, 0, 0, 0, 0, 0x0f}).data()), "00:00:00:00:00:0f");
+    EXPECT_EQ(
+        std::string_view(metric::formatDev({0, 0, 0, 0, 0, 0x0f}).data()),
+        "00:00:00:00:00:0f"
+    );
     EXPECT_TRUE(metric::isValidDev(s.data()));
 }
 
-
 TEST(MetricSerialize, ExactWireFormat) {
-    EXPECT_EQ(serialize("uptime_s", 123, 42, 1500),
-              "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=42 age_ms=1500 name=uptime_s "
-              "value=123\n");
-    EXPECT_EQ(serialize("temp_c", 23.5, 0),
-              "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=0 age_ms=0 name=temp_c value=23.5\n");
+    EXPECT_EQ(
+        serialize("uptime_s", 123, 42, 1500),
+        "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=42 age_ms=1500 name=uptime_s "
+        "value=123\n"
+    );
+    EXPECT_EQ(
+        serialize("temp_c", 23.5, 0),
+        "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=0 age_ms=0 name=temp_c value=23.5\n"
+    );
 }
 
 TEST(MetricSerialize, BootIsAlwaysEightHexDigits) {
@@ -83,15 +93,17 @@ TEST(MetricSerialize, BootIsAlwaysEightHexDigits) {
 }
 
 TEST(MetricSerialize, LargeIntegersKeepAllDigits) {
-    EXPECT_EQ(serialize("x", 4294967295.0, 4294967295U, 4294967295U, Origin{k_dev, 0xffffffffU}),
-              "ver=2 dev=20:9b:a9:61:15:6c boot=ffffffff seq=4294967295 age_ms=4294967295 name=x "
-              "value=4294967295\n");
+    EXPECT_EQ(
+        serialize("x", 4294967295.0, 4294967295U, 4294967295U, Origin{k_dev, 0xffffffffU}),
+        "ver=2 dev=20:9b:a9:61:15:6c boot=ffffffff seq=4294967295 age_ms=4294967295 name=x "
+        "value=4294967295\n"
+    );
 }
 
 TEST(MetricSerialize, LongestMessageFits) {
     const std::string name(metric::k_max_name_len, 'a');
-    const std::string wire = serialize(name, -1.234567891e-300, 4294967295U, 4294967295U,
-                                       Origin{k_dev, 0xffffffffU});
+    const std::string wire =
+        serialize(name, -1.234567891e-300, 4294967295U, 4294967295U, Origin{k_dev, 0xffffffffU});
     ASSERT_FALSE(wire.empty());
     EXPECT_LT(wire.size(), metric::k_max_message_len);
     EXPECT_TRUE(metric::parse(wire).has_value());
@@ -107,8 +119,10 @@ TEST(MetricSerialize, RejectsBadInput) {
 
 TEST(MetricSerialize, RejectsTooSmallBuffer) {
     std::array<char, 40> small{};
-    EXPECT_EQ(metric::serialize(k_origin, 1, 0, Metric{"uptime_s", 1}, small.data(), small.size()),
-              0U);
+    EXPECT_EQ(
+        metric::serialize(k_origin, 1, 0, Metric{"uptime_s", 1}, small.data(), small.size()),
+        0U
+    );
 }
 
 TEST(MetricParse, RoundTripV2) {
@@ -140,33 +154,39 @@ TEST(MetricParse, V2RejectsBadFields) {
     EXPECT_FALSE(metric::parse("ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4z" + tail).has_value());
     EXPECT_FALSE(metric::parse("ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91g4" + tail).has_value());
     EXPECT_FALSE(
-        metric::parse("ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=1 age_ms=4294967296 name=a "
-            "value=2")
-        .has_value());
+        metric::parse(
+            "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=1 age_ms=4294967296 name=a "
+            "value=2"
+        )
+            .has_value()
+    );
 }
 
 TEST(MetricParse, RejectsOldVersion) {
     EXPECT_FALSE(metric::parse("ver=1 seq=42 name=uptime_s value=123\n").has_value());
     EXPECT_FALSE(
         metric::parse("ver=1 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=1 age_ms=0 name=a value=2")
-        .has_value());
+            .has_value()
+    );
 }
 
 TEST(MetricParse, RejectsUnknownVersion) {
     EXPECT_FALSE(
         metric::parse("ver=3 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=1 age_ms=0 name=a value=2")
-        .has_value());
+            .has_value()
+    );
     EXPECT_FALSE(
         metric::parse("ver=x dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=1 age_ms=0 name=a value=2")
-        .has_value());
+            .has_value()
+    );
 }
 
 namespace {
-    std::string line(std::string_view seq, std::string_view name, std::string_view value) {
-        return "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=" + std::string(seq) +
-               " age_ms=0 name=" + std::string(name) + " value=" + std::string(value);
-    }
+std::string line(std::string_view seq, std::string_view name, std::string_view value) {
+    return "ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=" + std::string(seq) +
+           " age_ms=0 name=" + std::string(name) + " value=" + std::string(value);
 }
+}  // namespace
 
 TEST(MetricParse, AcceptsWithOrWithoutLineEnd) {
     EXPECT_TRUE(metric::parse(line("1", "a", "2")).has_value());
@@ -197,8 +217,11 @@ TEST(MetricParse, RejectsBadNameAndOversizedInput) {
 }
 
 TEST(MetricNames, AllNamesAreValid) {
-    for (const std::string_view name : {metric::names::k_temperature_c, metric::names::k_humidity_pct,
-                                        metric::names::k_temp_alert, metric::names::k_dht_ok}) {
+    for (const std::string_view name :
+         {metric::names::k_temperature_c,
+          metric::names::k_humidity_pct,
+          metric::names::k_temp_alert,
+          metric::names::k_dht_ok}) {
         EXPECT_TRUE(metric::isValidName(name)) << name;
-                                        }
+    }
 }
