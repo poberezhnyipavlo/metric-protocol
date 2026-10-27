@@ -47,7 +47,7 @@ const auto dev = metric::formatDev(mac);             // "20:9b:a9:61:15:6c"
 const metric::Origin origin{dev.data(), esp_random()};
 
 // sender: per metric
-std::array<char, metric::k_max_message_len> buf{};
+std::array<char, metric::kMaxMessageLen> buf{};
 size_t len = metric::serialize(origin, seq, age_ms, metric::Metric{"uptime_s", 123}, buf.data(), buf.size());
 // len == 0: invalid dev/name, NaN/inf value, or buffer too small; nothing to send
 

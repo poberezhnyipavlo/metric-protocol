@@ -6,7 +6,7 @@
 
 namespace metric {
 namespace {
-constexpr char k_hex[] = "0123456789abcdef";
+constexpr char kHex[] = "0123456789abcdef";
 
 bool isLower(char c) {
     return c >= 'a' && c <= 'z';
@@ -97,7 +97,7 @@ std::optional<double> parseDouble(std::string_view s) {
 }  // namespace
 
 bool isValidName(std::string_view name) {
-    if (name.empty() || name.size() > k_max_name_len || !isLower(name[0])) {
+    if (name.empty() || name.size() > kMaxNameLen || !isLower(name[0])) {
         return false;
     }
     return std::all_of(name.begin(), name.end(), [](char c) {
@@ -106,27 +106,27 @@ bool isValidName(std::string_view name) {
 }
 
 bool isValidDev(std::string_view dev) {
-    if (dev.size() != k_dev_len) {
+    if (dev.size() != kDevLen) {
         return false;
     }
     for (size_t i = 0; i < dev.size(); ++i) {
-        const bool colonPlace = (i % 3) == 2;
-        if (colonPlace ? dev[i] != ':' : !isLowerHex(dev[i])) {
+        const bool colon_place = (i % 3) == 2;
+        if (colon_place ? dev[i] != ':' : !isLowerHex(dev[i])) {
             return false;
         }
     }
     return true;
 }
 
-std::array<char, k_dev_len + 1> formatDev(const std::array<uint8_t, 6>& mac) {
-    std::array<char, k_dev_len + 1> out{};
+std::array<char, kDevLen + 1> formatDev(const std::array<uint8_t, 6>& mac) {
+    std::array<char, kDevLen + 1> out{};
     size_t pos = 0;
     for (size_t i = 0; i < mac.size(); ++i) {
         if (i > 0) {
             out[pos++] = ':';
         }
-        out[pos++] = k_hex[mac[i] >> 4];
-        out[pos++] = k_hex[mac[i] & 0x0F];
+        out[pos++] = kHex[mac[i] >> 4];
+        out[pos++] = kHex[mac[i] & 0x0F];
     }
     out[pos] = '\0';
 
@@ -150,7 +150,7 @@ size_t serialize(
         buf,
         cap,
         "ver=%lu dev=%.*s boot=%08lx seq=%lu age_ms=%lu name=%.*s value=%.10g\n",
-        static_cast<unsigned long>(k_version),
+        static_cast<unsigned long>(kVersion),
         static_cast<int>(origin.dev.size()),
         origin.dev.data(),
         static_cast<unsigned long>(origin.boot),
@@ -170,7 +170,7 @@ size_t serialize(
 
 std::optional<Message> parse(std::string_view text) {
     std::string_view rest = trimLineEnd(text);
-    if (rest.empty() || rest.size() > k_max_message_len || rest.back() == ' ') {
+    if (rest.empty() || rest.size() > kMaxMessageLen || rest.back() == ' ') {
         return std::nullopt;
     }
 
@@ -187,18 +187,18 @@ std::optional<Message> parse(std::string_view text) {
     }
 
     const auto version = parseUint32(*ver);
-    if (!version || *version != k_version) {
+    if (!version || *version != kVersion) {
         return std::nullopt;
     }
 
-    const auto bootNum = parseHex32(*boot);
-    const auto seqNum = parseUint32(*seq);
-    const auto ageNum = parseUint32(*age);
+    const auto boot_num = parseHex32(*boot);
+    const auto seq_num = parseUint32(*seq);
+    const auto age_num = parseUint32(*age);
     const auto num = parseDouble(*value);
-    if (!isValidDev(*dev) || !bootNum || !seqNum || !ageNum || !isValidName(*name) || !num) {
+    if (!isValidDev(*dev) || !boot_num || !seq_num || !age_num || !isValidName(*name) || !num) {
         return std::nullopt;
     }
 
-    return Message{*dev, *bootNum, *seqNum, *ageNum, *name, *num};
+    return Message{*dev, *boot_num, *seq_num, *age_num, *name, *num};
 }
 }  // namespace metric

@@ -7,10 +7,10 @@
 #include <string_view>
 
 namespace metric {
-constexpr uint32_t k_version = 2;
-constexpr size_t k_max_name_len = 31;
-constexpr size_t k_dev_len = 17;
-constexpr size_t k_max_message_len = 160;
+constexpr uint32_t kVersion = 2;
+constexpr size_t kMaxNameLen = 31;
+constexpr size_t kDevLen = 17;
+constexpr size_t kMaxMessageLen = 160;
 
 struct Origin {
     std::string_view dev;
@@ -33,7 +33,7 @@ struct Message {
 
 bool isValidName(std::string_view name);
 bool isValidDev(std::string_view dev);
-std::array<char, k_dev_len + 1> formatDev(const std::array<uint8_t, 6>& mac);
+std::array<char, kDevLen + 1> formatDev(const std::array<uint8_t, 6>& mac);
 size_t serialize(
     const Origin& origin,
     uint32_t seq,
