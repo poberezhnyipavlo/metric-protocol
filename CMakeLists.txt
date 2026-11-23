@@ -5,7 +5,9 @@ add_library(metric_protocol src/MetricProtocol.cpp
         include/metric_protocol/MetricNames.h
         src/FieldParser.h
         src/LogProtocol.cpp
-        include/metric_protocol/LogProtocol.h)
+        include/metric_protocol/LogProtocol.h
+        include/metric_protocol/Signature.h
+        src/Signature.cpp)
 add_library(metric_protocol::metric_protocol ALIAS metric_protocol)
 target_include_directories(metric_protocol PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(metric_protocol PUBLIC cxx_std_17)
@@ -25,7 +27,8 @@ if(METRIC_PROTOCOL_BUILD_TESTS)
 
     enable_testing()
     add_executable(metric_protocol_tests test/test_metric_protocol.cpp
-            test/test_log_protocol.cpp)
+            test/test_log_protocol.cpp
+            test/test_signature.cpp)
     target_link_libraries(metric_protocol_tests PRIVATE metric_protocol GTest::gtest_main)
     target_compile_options(metric_protocol_tests PRIVATE -Wall -Wextra -Wconversion -Werror)
 

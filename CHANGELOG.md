@@ -3,6 +3,16 @@
 All notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/),
 versions follow [Semantic Versioning](https://semver.org/).
 
+## [3.1.0] - 2026-11-23
+
+### Added
+- `metric_protocol/Signature.h`: HMAC signature suffix for any line of the protocol, `" sig=<64 lowercase hex>"`:
+  `sig::appendSignature()` for the node, `sig::splitSignature()` for the receiver, `sig::parseKey()` for the shared key.
+  The library only formats and splits; the MAC itself is computed by each side (mbedTLS on the node, OpenSSL on the
+  receiver), so the library still has no dependencies.
+
+The metric (`ver=2`) and log (`ver=1`) formats are unchanged; a signed line is an unchanged line plus the suffix.
+
 ## [3.0.0] - 2026-10-27
 
 ### Added

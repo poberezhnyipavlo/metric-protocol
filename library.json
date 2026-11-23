@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Text wire formats shared by the ESP32 monitoring node and the System Monitor receiver: metrics (ver=2) and node event logs (ver=1).",
   "keywords": "metrics, logs, protocol, esp32",
   "repository": {

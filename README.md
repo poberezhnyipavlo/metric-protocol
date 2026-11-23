@@ -66,6 +66,16 @@ if (auto r = logproto::parse(line)) {
 }
 ```
 
+## Signed lines
+
+Any line can carry an HMAC-SHA256 of everything before the suffix:
+
+    ver=2 dev=20:9b:a9:61:15:6c boot=3f2a91c4 seq=42 age_ms=1500 name=temperature_c value=24.3 sig=<64 hex>
+
+The signature is always the last 69 characters, so a log `text` that contains `sig=` does not confuse the receiver.
+Compute the MAC with your platform's crypto library, then `sig::appendSignature()`; on the receiver
+`sig::splitSignature()` gives the payload to check and to parse.
+
 ## API
 
 ```cpp
